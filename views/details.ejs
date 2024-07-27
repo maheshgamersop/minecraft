@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <link rel="stylesheet" href="/style.css">
+  <title>User Details</title>
+</head>
+<body class="se">
+
+  <nav class="navbar navbar-expand-lg bg-primary">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="/">MINECRAFT</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+        <div class="navbar-nav">
+          <a class="nav-link active" aria-current="page" href="/">Home</a>
+          <a class="nav-link" href="/">About</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container mt-5">
+    <h2 class="mb-4">Enter Your Unique Key</h2>
+    <form id="uniqueKeyForm">
+      <div class="mb-3">
+        <label for="uniqueKey" class="form-label">Unique Key</label>
+        <input type="text" class="form-control" id="uniqueKey" value="<%= uniqueKey ? uniqueKey : '' %>" required>
+      </div>
+      <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+
+    <div id="userDetails" class="mt-5" style="display: none;">
+      <h3>User Details</h3>
+      <div id="detailsContainer"></div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+  <script>
+    document.getElementById('uniqueKeyForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const uniqueKey = document.getElementById('uniqueKey').value;
+      fetch('/order/find', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ uniqueKey })
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          const detailsContainer = document.getElementById('detailsContainer');
+          detailsContainer.innerHTML = '';
+          data.users.forEach(user => {
+            const userDetails = `
+              <div class="user-details mb-4 p-3" style="border: 1px solid #555;">
+                <p><strong>🍭 Discord Username:</strong> ${user.duser}</p>
+                <p><strong>🍭 Discord ID:</strong> ${user.discordid}</p>
+                <p><strong>🍭 Minecraft Username:</strong> ${user.mid}</p>
+                <p><strong>🍭 Amount Paid:</strong> ${user.amount}</p>
+                <p><strong>🍭ORDER ID:</strong> ${user.razorpayOrderId}</p>
+              </div>
+            `;
+            detailsContainer.innerHTML += userDetails;
+          });
+          document.getElementById('userDetails').style.display = 'block';
+        } else {
+          alert('Invalid Unique Key');
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred. Please try again.');
+      });
+    });
+  </script>
+</body>
+</html>

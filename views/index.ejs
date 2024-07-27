@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <link rel="stylesheet" href="/style.css">
+  <title>Minecraft Tournament</title>
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg bg-primary">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">Minecraft</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+        <div class="navbar-nav">
+          <a class="nav-link active" aria-current="page" href="/">Home</a>
+          <a class="nav-link" href="/about">About</a>
+          <a class="nav-link active" aria-current="page" href="/order/find">Last Payment</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+  <h2 class="head">MINECRAFT TOURNAMENT</h2>
+  <form id="tournamentForm">
+    <div class="mb-3">
+      <label for="username" class="form-label">DISCORD-USERNAME</label>
+      <input type="text" name="" class="form-control" id="username" required>
+      <div class="ff">
+    </div>
+    <div class="mb-3">
+      <label for="id" class="form-label">DISCORD-ID</label>
+      <input type="text" class="form-control" id="id" required>
+    </div>
+    <div class="mb-3">
+      <label for="m-user" class="form-label">MINECRAFT-USERNAME</label>
+      <input type="text" class="form-control" id="m-user" required>
+    </div>
+    <div class="mb-3">
+      <label for="amount" class="form-label">AMOUNT</label>
+      <input type="number" class="form-control" id="amount" required>
+    </div>
+    <button type="submit" class="btn btn-primary" id="btn">Submit</button>
+  </form>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <script>
+    document.getElementById('tournamentForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const duser = document.getElementById('username').value;
+      const discordid = document.getElementById('id').value;
+      const mid = document.getElementById('m-user').value;
+      const amount = document.getElementById('amount').value * 100;
+
+      fetch('/create/order', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ amount })
+      }).then(response => response.json()).then(data => {
+        if (typeof Razorpay === 'undefined') {
+          alert('Razorpay SDK not loaded. Please try again later.');
+          return;
+        }
+
+        const options = {
+          "key": "rzp_test_pvj558J4PsUVbi", // Enter the Key ID generated from the Dashboard
+          "amount": amount,
+          "currency": "INR",
+          "name": "Minecraft Tournament",
+          "description": "Tournament Entry Fee",
+          "order_id": data.orderId,
+          "handler": function (response){
+            fetch('/create/payment', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                duser,
+                discordid,
+                mid,
+                amount: amount / 100, // Convert back to rupees
+                razorpayPaymentId: response.razorpay_payment_id,
+                razorpayOrderId: response.razorpay_order_id,
+                razorpaySignature: response.razorpay_signature
+              })
+            }).then(response => response.json())
+              .then(data => {
+                if (data.success) {
+                  // Redirect to info page with query parameters
+                  window.location.href = `/create/s?discordid=${discordid}&duser=${duser}&mid=${mid}&amount=${amount / 100}&razorpayPaymentId=${response.razorpay_payment_id}&razorpayOrderId=${response.razorpay_order_id}&uniqueKey=${data.uniqueKey}`;
+                } else {
+                  alert('Payment failed!');
+                }
+              });
+          },
+          "prefill": {
+            "name": "",
+            "email": "",
+            "contact": ""
+          }
+        };
+
+        const rzp1 = new Razorpay(options);
+        rzp1.open();
+      });
+    });
+  </script>
+</body>
+</html>

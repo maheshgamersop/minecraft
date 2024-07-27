@@ -1,0 +1,50 @@
+@import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap');
+body {
+ 
+  background: #222222;
+   color: lime;
+  font-family: 'Libre Baskerville';
+}
+.head{
+  color: yellow;
+  font-family: 'Roboto', sans-serif;
+  font-size: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 15px;
+  margin-top: 20px;
+  border: 1px solid white;
+}
+
+.btn {
+  font-family: 'Playwrite PL', sans-serif;
+  margin: 10px auto;
+  display: flex;
+  justify-content: center;
+  justify-items: center;
+}
+.form-label {
+  justify-content: center;
+  
+  display: flex;
+  margin: 10px auto;
+}
+.se {
+  background: #222222;
+   color: lime;
+  font-family: 'Playwrite PL';
+}
+.order-card {
+  margin-bottom: 20px;
+  
+}
+.card {
+  font-family: 'Playwrite PL';
+  background: yellow;
+}
+.edit {
+  width: 200px;
+  color: lime;
+  font-size: 30px;
+}
