@@ -10,7 +10,7 @@ router.get('/admin', isAuthenticated, async (req, res) => {
   try {
     console.log(req.headers.check)
     const data = await Order.find();
-    res.send(data);
+    res.render('admin', { data });
   } catch (error) {
     console.error("Error fetching orders:", error);
     res.status(500).send("Something went wrong!");
@@ -29,8 +29,12 @@ router.delete('/admin/delete/:id', isAuthenticated, async (req, res) => {
 });
 
 // Login routes
+router.get('/login', (req, res) => {
+  res.render('login');
+});
+
 router.get('/verify', loginauth, (req, res) => {
-  console.log('verifyied')
+  console.log('verified')
   res.status(404).send("404")
 });
 

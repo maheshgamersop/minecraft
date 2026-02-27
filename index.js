@@ -12,7 +12,6 @@ const io = new Server(server);
 const find = require('./router/find');
 const admin = require('./router/admin');
 const connect = require('./connection/mongodb');
-const save = require('./model/save');
 const order = require('./router/order');
 
 // Connect to MongoDB
@@ -54,8 +53,7 @@ app.use('/lock', admin);
 app.use('/order', find);
 app.use('/create', order);
 
-// Test the `save` model
 // Start the server
-server.listen(3000, () => {
-  console.log('Server is running on port 3000');
+server.listen(process.env.PORT || 3000, () => {
+  console.log('Server is running on port ' + (process.env.PORT || 3000));
 });
