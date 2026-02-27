@@ -45,6 +45,10 @@ app.use((req, res, next) => {
 });
 
 // Routes
+app.get('/', (req, res) => {
+  res.render('index');
+});
+
 app.use('/lock', admin);
 app.use('/order', find);
 app.use('/create', order);
