@@ -44,6 +44,11 @@ app.use((req, res, next) => {
   next();
 });
 
+// Root route
+app.get('/', (req, res) => {
+  res.render('index');
+});
+
 // Routes
 app.use('/lock', admin);
 app.use('/order', find);
