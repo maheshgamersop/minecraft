@@ -1,7 +1,7 @@
 const { check } = require('../auth/login');
 
 const isAuthenticated = (req, res, next) => {
-  const token = req.headers.authorization;
+  const token = req.cookies.token;
   const user = check(token);
   if (user) {
     req.user = user;
@@ -11,7 +11,7 @@ const isAuthenticated = (req, res, next) => {
   }
 };
 const loginauth = (req, res, next)=>{
-  const token = req.headers.authorization;
+  const token = req.cookies.token;
   const user = check(token);
   if (user) {
     res.status(200).send({ message: 'TOKEN IS CORRECT'})

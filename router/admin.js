@@ -44,8 +44,8 @@ router.post('/login', async (req, res) => {
     const admin = await Admin.findOne({ email, password });
     if (admin) {
       const token = login({ id: admin._id, email: admin.email });
-
-      res.send({ token: token, message: 'Login successful' });
+      res.cookie('token', token, { httpOnly: true, sameSite: 'Strict' });
+      res.redirect('/lock/admin');
     } else {
       res.status(401).send('Invalid credentials');
     }
