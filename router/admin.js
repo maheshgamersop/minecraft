@@ -11,8 +11,7 @@ router.get("/admin", isAuthenticated, async (req, res) => {
   const orders = await Order.find();
 
     return res.json(orders);
-}
-
+})
 
 // Delete order route
 router.delete('/admin/delete/:id', isAuthenticated, async (req, res) => {
