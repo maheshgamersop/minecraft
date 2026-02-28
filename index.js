@@ -25,7 +25,7 @@ app.use(express.json());
 app.use(express.static('public'));
 
 // Set up CORS
-const allowedOrigins = ['https://minecraft-yfrb.onrender.com','https://pay.nitrogen.kesug.com' ,'https://6be12338-8441-409d-8878-f7bee20af9de-00-ahmtmo5negz0.pike.replit.dev'];
+const allowedOrigins = ['https://block-buddy-works.lovable.app','https://minecraft-yfrb.onrender.com','https://pay.nitrogen.kesug.com' ,'https://6be12338-8441-409d-8878-f7bee20af9de-00-ahmtmo5negz0.pike.replit.dev'];
 
 app.use(cors({
   origin: function (origin, callback) {
