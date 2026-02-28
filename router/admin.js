@@ -6,16 +6,15 @@ const { login } = require("../auth/login");
 const { isAuthenticated, loginauth } = require("../middle/login");
 
 // Admin page route
-router.get('/admin', isAuthenticated, async (req, res) => {
-  try {
-    console.log(req.headers.check)
-    const data = await Order.find();
-    res.render('admin', { data });
-  } catch (error) {
-    console.error("Error fetching orders:", error);
-    res.status(500).send("Something went wrong!");
+// In your /lock/admin route
+router.get("/admin", isAuthenticated, async (req, res) => {
+  const orders = await Order.find();
+  if (req.headers.accept?.includes("application/json")) {
+    return res.json(orders);
   }
+  res.render("admin", { data: orders }); // fallback for EJS
 });
+
 
 // Delete order route
 router.delete('/admin/delete/:id', isAuthenticated, async (req, res) => {
