@@ -12,7 +12,6 @@ const io = new Server(server);
 const find = require('./router/find');
 const admin = require('./router/admin');
 const connect = require('./connection/mongodb');
-const save = require('./model/save');
 const order = require('./router/order');
 
 // Connect to MongoDB
@@ -26,7 +25,7 @@ app.use(express.json());
 app.use(express.static('public'));
 
 // Set up CORS
-const allowedOrigins = ['https://minecraft-yfrb.onrender.com','https://pay.nitrogen.kesug.com' ,'https://6be12338-8441-409d-8878-f7bee20af9de-00-ahmtmo5negz0.pike.replit.dev'];
+const allowedOrigins = ['https://block-buddy-works.lovable.app','https://minecraft-yfrb.onrender.com','https://pay.nitrogen.kesug.com' ,'https://6be12338-8441-409d-8878-f7bee20af9de-00-ahmtmo5negz0.pike.replit.dev'];
 
 app.use(cors({
   origin: function (origin, callback) {
@@ -44,13 +43,17 @@ app.use((req, res, next) => {
   next();
 });
 
+// Root route
+app.get('/', (req, res) => {
+  res.render('index');
+});
+
 // Routes
 app.use('/lock', admin);
 app.use('/order', find);
 app.use('/create', order);
 
-// Test the `save` model
 // Start the server
-server.listen(3000, () => {
-  console.log('Server is running on port 3000');
+server.listen(process.env.PORT || 3000, () => {
+  console.log('Server is running on port ' + (process.env.PORT || 3000));
 });

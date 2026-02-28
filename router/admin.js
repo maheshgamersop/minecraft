@@ -6,16 +6,13 @@ const { login } = require("../auth/login");
 const { isAuthenticated, loginauth } = require("../middle/login");
 
 // Admin page route
-router.get('/admin', isAuthenticated, async (req, res) => {
-  try {
-    console.log(req.headers.check)
-    const data = await Order.find();
-    res.send(data);
-  } catch (error) {
-    console.error("Error fetching orders:", error);
-    res.status(500).send("Something went wrong!");
-  }
-});
+// In your /lock/admin route
+router.get("/admin", isAuthenticated, async (req, res) => {
+  const orders = await Order.find();
+
+    return res.json(orders);
+}
+
 
 // Delete order route
 router.delete('/admin/delete/:id', isAuthenticated, async (req, res) => {
@@ -29,8 +26,12 @@ router.delete('/admin/delete/:id', isAuthenticated, async (req, res) => {
 });
 
 // Login routes
+router.get('/login', (req, res) => {
+  res.render('login');
+});
+
 router.get('/verify', loginauth, (req, res) => {
-  console.log('verifyied')
+  console.log('verified')
   res.status(404).send("404")
 });
 
@@ -40,8 +41,8 @@ router.post('/login', async (req, res) => {
     const admin = await Admin.findOne({ email, password });
     if (admin) {
       const token = login({ id: admin._id, email: admin.email });
-
-      res.send({ token: token, message: 'Login successful' });
+      res.cookie('token', token, { httpOnly: true, sameSite: 'Strict' });
+      res.redirect('/lock/admin');
     } else {
       res.status(401).send('Invalid credentials');
     }
