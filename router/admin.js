@@ -9,11 +9,9 @@ const { isAuthenticated, loginauth } = require("../middle/login");
 // In your /lock/admin route
 router.get("/admin", isAuthenticated, async (req, res) => {
   const orders = await Order.find();
-  if (req.headers.accept?.includes("application/json")) {
+
     return res.json(orders);
-  }
-  res.render("admin", { data: orders }); // fallback for EJS
-});
+}
 
 
 // Delete order route
